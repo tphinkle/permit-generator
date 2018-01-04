@@ -1,0 +1,194 @@
+{% extends "permit-generator.html" %}
+
+
+{% block head %}
+<title>Fire watch</title>
+{% endblock %}
+
+
+{% block permittitle %}
+Fire watch permit generator
+{% endblock %}
+
+
+
+
+{% block survey %}
+
+
+<div class="form-group">
+  <label for="form_ID">Form ID #</label>
+  <input type="email" class="form-control" name = 'JobID' id="form_ID" aria-describedby="form_ID_help" value={{job_id}} readonly/>
+  <input type="hidden" name='JobID' value={{job_id}}/>
+  <small id="form_ID_help" class="form-text text-muted">The job ID # this form is associated with.</small>
+</div>
+
+
+
+
+
+
+
+
+
+<div class="form-group">
+  <label class="control-label">Is there a risk of fires?</label>
+
+
+
+  <div class="form-check">
+    <label class="form-check-label">
+      <input class="form-check-input" type="radio" name="field_0" id="field_0_Yes" value="Yes"/>
+      Yes
+    </label>
+  </div>
+
+  <div class="form-check">
+    <label class="form-check-label">
+      <input class="form-check-input" type="radio" name="field_0" id="field_0_No" value="No"/>
+      No
+    </label>
+  </div>
+
+</div>
+
+
+
+
+
+<div class="form-group hidden" id="field_0_0_form">
+  <label class="control-label" for="field_0_0">
+    Name of fire watch?
+  </label>
+
+  <div class="form-row">
+
+    <div class="col-6">
+      <input type="text" class="form-control" name="field_0_0_FirstName" id="field_0_0_FirstName" placeholder="First name"/>
+    </div>
+
+    <div class="col-6">
+      <input type="text" class="form-control" name="field_0_0_LastName" id="field_0_0_LastName" placeholder="Last name"/>
+    </div>
+
+  </div>
+
+</div>
+
+
+
+
+
+
+<div class="form-group hidden" id="field_0_1_form">
+  <label class="control-label" for="field_0_1">
+    Is appropriate fire extinguishing equipment available to the fire watch?
+  </label>
+
+  <div class="form-check">
+    <label class="form-check-label">
+      <input class="form-check-input" type="radio" name="field_0_1" id="field_0_1_Yes" value="Yes"/>
+      Yes
+    </label>
+  </div>
+
+  <div class="form-check">
+    <label class="form-check-label">
+      <input class="form-check-input" type="radio" name="field_0_1" id="field_0_1_No" value="No"/>
+      No
+    </label>
+  </div>
+
+
+  <div class="form-group hidden" id="field_0_1_0_form">
+    <label class="control-label" for="field_0_1_0">
+      Has the fire extinguishing equipment been inspected regularly?
+    </label>
+
+    <div class="form-check">
+      <label class="form-check-label">
+        <input class="form-check-input" type="radio" name="field_0_1_0" id="field_0_1_0_Yes" value="Yes"/>
+        Yes
+      </label>
+    </div>
+
+    <div class="form-check">
+      <label class="form-check-label">
+        <input class="form-check-input" type="radio" name="field_0_1_0" id="field_0_1_0_No" value="No"/>
+        No
+      </label>
+    </div>
+
+  </div>
+
+
+  <div class="form-group hidden" id="field_0_1_1_form">
+    <label class="control-label" for="field_0_1_1">
+      Has the fire watch been trained on how to use this equipment?
+    </label>
+
+    <div class="form-check">
+      <label class="form-check-label">
+        <input class="form-check-input" type="radio" name="field_0_1_1" id="field_0_1_1_Yes" value="Yes"/>
+        Yes
+      </label>
+    </div>
+
+    <div class="form-check">
+      <label class="form-check-label">
+        <input class="form-check-input" type="radio" name="field_0_1_1" id="field_0_1_1_No" value="No"/>
+        No
+      </label>
+    </div>
+
+  </div>
+
+
+  <div class="form-group hidden" id="field_0_2_form">
+    <label class="control-label" for="field_0_2">
+      Will the fire watch have any other duties in addition to being fire watch?
+    </label>
+
+    <div class="form-check">
+      <label class="form-check-label">
+        <input class="form-check-input" type="radio" name="field_0_2" id="field_0_2_Yes" value="Yes"/>
+        Yes
+      </label>
+    </div>
+
+    <div class="form-check">
+      <label class="form-check-label">
+        <input class="form-check-input" type="radio" name="field_0_2" id="field_0_2_No" value="No"/>
+        No
+      </label>
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<button type="submit" class="btn btn-primary" value="Submit">Submit</button>
+
+<script type="text/javascript" src="static/js/firewatch.js?version=1"></script>
+
+
+
+
+{% endblock %}

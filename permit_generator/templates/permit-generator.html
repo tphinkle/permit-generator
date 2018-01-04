@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+
+
+
+{% block body %}
+
+<div class="container-fluid text-center">
+  <h1> {% block permittitle %}{% endblock %} </h1>
+</div>
+
+
+<div class="container-fluid text-left">
+  <form id="permit" action="/{{form_type}}" method="post">
+    {% block survey %}{% endblock %}
+ </form>
+</div>
+
+
+
+
+
+{% endblock %}
