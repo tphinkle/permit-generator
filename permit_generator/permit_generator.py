@@ -10,9 +10,18 @@ import psycopg2
 import flask
 
 
-
+# A lot of this is following flask.pocoo.org/docs/0.12/tutorial/setup
 
 app = flask.Flask(__name__) # create the application instance :)
+app.config.from_object(__name__) # Load config from thsie file (permit_generator.py)
+
+app.config.update(dict(
+SECRET_KEY = 'key',
+USERNAME = 'admin',
+PASSWORD = 'default'
+))
+
+
 
 
 
@@ -44,6 +53,7 @@ db_cursor = db_connection.cursor()
 db_cursor.execute(
 """CREATE TABLE IF NOT EXISTS firewatch (
   job_id text primary key,
+  initiator text,
   fire_risk text,
   firewatch_first text,
   firewatch_last text,
@@ -55,16 +65,17 @@ db_cursor.execute(
 """
 )
 
-
-
-
-
-# Commit
 db_connection.commit()
 
-
-
-
+# Create usernames
+db_cursor.execute(
+"""
+CREATE TABLE IF NOT EXISTS accounts (
+    usernames text primary key,
+    passwords text
+);
+"""
+)
 
 
 
@@ -122,6 +133,90 @@ def get_database():
     print(data)
 
     return flask.render_template('database.html', data = data)
+
+def validate_login(username, password):
+    if username == 'admin' and password == 'password':
+        return True
+    else:
+        return False
+
+def validate_registration(proposed_username):
+    username_query = """
+    SELECT username FROM users;
+    """
+
+    usernames = db_cursor.execute(username_query)
+    usernames = [username[0] for username in usernames]
+
+    if proposed_username in usernames:
+        return False
+
+    else:
+        return True
+
+def add_user(username, password):
+    user_query = """
+    SELECT username FROM users;
+    """
+
+    users = db_cursor.execute(user_query)
+
+    print(users)
+
+@app.route('/registration', methods = ['GET', 'POST'])
+def get_registration():
+
+    # Get method type
+    method = flask.request.method
+
+    # Get form
+    if method == 'GET':
+        return flask.render_template("registration.html", registration = "none")
+
+    elif method == 'POST':
+        registration_info = flask.request.form
+
+        username = registration_info['username']
+        password = registration_info['password']
+
+        validation_ok = validate_registration(username)
+
+        if validation_ok:
+            add_user(username, password)
+            return flask.render_template('/')
+
+        else:
+            return flask.render_template("registration.html", registration = "bad")
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def get_login():
+
+    # Get method type
+    method = flask.request.method
+
+    # Get form
+    if method == 'GET':
+        return flask.render_template("login.html", login = "none")
+
+
+
+    elif method == 'POST':
+        login_info = flask.request.form
+        username = login_info['username']
+        password = login_info['password']
+
+        credentials = validate_login(username, password)
+
+        # Render bad login template
+        if credentials == False:
+            return flask.render_template("login.html", login = "bad")
+
+        else:
+            flask.session['user'] = username
+            return flask.redirect('/', code=302)
+
+
 
 def get_new_job_id():
 
@@ -205,14 +300,15 @@ def post_permit_to_database(form, form_type):
         else:
             firewatch_other_duties = '-1'
 
-        #(job_id, fire_risk, firewatch_first, firewatch_last, extinguish_equip_avail, equip_inspct, firewatch_trained, firewatch_other_duties)
+        #(job_id, initator, fire_risk, firewatch_first, firewatch_last, extinguish_equip_avail, equip_inspct, firewatch_trained, firewatch_other_duties)
+        initiator = 'admin'
         command = f'''
-        INSERT INTO firewatch (job_id, fire_risk, firewatch_first, firewatch_last, extinguish_equip_avail, equip_inspct, firewatch_trained, firewatch_other_duties)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
+        INSERT INTO firewatch (job_id, initiator, fire_risk, firewatch_first, firewatch_last, extinguish_equip_avail, equip_inspct, firewatch_trained, firewatch_other_duties)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
         '''
 
 
 
 
-        db_cursor.execute(command, (job_id, fire_risk, firewatch_first, firewatch_last, extinguish_equip_avail, equip_inspct, firewatch_trained, firewatch_other_duties))
+        db_cursor.execute(command, (job_id, initiator, fire_risk, firewatch_first, firewatch_last, extinguish_equip_avail, equip_inspct, firewatch_trained, firewatch_other_duties))
         db_connection.commit()

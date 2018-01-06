@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% block head %}
+
+<title> Login </title>
+
+{% endblock %}
+
+
+
+{% block body %}
+
+
+<div class="container">
+
+
+
+
+
+  <div class="row">
+    <div class="Absolute-Center is-Responsive">
+      <div id="logo-container"></div>
+      <div class="col-sm-12 col-md-10 col-md-offset-1 col-lg-4 col-lg-offset-4">
+        <img class="img-responsive" src="static/img/login.png" alt="login">
+        <form action="" id="loginForm" method="POST">
+          <div class="form-group input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+            <input class="form-control" type="text" name='username' placeholder="username"/>
+          </div>
+          <div class="form-group input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+            <input class="form-control" type="password" name='password' placeholder="password"/>
+          </div>
+
+            {% if login=="bad" %}
+
+            <p class="text-danger">Wrong username or password. Try again.</p>
+
+            {% endif %}
+
+
+
+
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-block" value="Submit">Login</button>
+          </div>
+          <p class="text-danger">Not a user? <a class="text-danger" href="/registration">Sign up!</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
