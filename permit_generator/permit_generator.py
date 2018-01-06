@@ -135,18 +135,37 @@ def get_database():
     return flask.render_template('database.html', data = data)
 
 def validate_login(username, password):
-    if username == 'admin' and password == 'password':
+
+    password_query = """
+    SELECT passwords FROM accounts WHERE usernames=%s;
+    """
+
+    db_cursor.execute(password_query, (username,))
+
+    true_password = db_cursor.fetchall()[0][0]
+
+    print(true_password)
+
+    if password == true_password:
         return True
     else:
         return False
 
+
 def validate_registration(proposed_username):
     username_query = """
-    SELECT username FROM users;
+    SELECT usernames FROM accounts;
     """
 
-    usernames = db_cursor.execute(username_query)
+    db_cursor.execute(username_query)
+    usernames = db_cursor.fetchall()
+
+
+
+
     usernames = [username[0] for username in usernames]
+
+    print(usernames)
 
     if proposed_username in usernames:
         return False
@@ -155,13 +174,17 @@ def validate_registration(proposed_username):
         return True
 
 def add_user(username, password):
-    user_query = """
-    SELECT username FROM users;
+
+
+    add_user_query = f"""
+    INSERT INTO accounts (usernames, passwords) VALUES (%s, %s);
     """
 
-    users = db_cursor.execute(user_query)
+    db_cursor.execute(add_user_query, (username, password))
+    db_connection.commit()
 
-    print(users)
+
+
 
 @app.route('/registration', methods = ['GET', 'POST'])
 def get_registration():
@@ -183,7 +206,7 @@ def get_registration():
 
         if validation_ok:
             add_user(username, password)
-            return flask.render_template('/')
+            return flask.render_template('index.html')
 
         else:
             return flask.render_template("registration.html", registration = "bad")
@@ -213,7 +236,7 @@ def get_login():
             return flask.render_template("login.html", login = "bad")
 
         else:
-            flask.session['user'] = username
+            flask.session['username'] = username
             return flask.redirect('/', code=302)
 
 
@@ -301,7 +324,7 @@ def post_permit_to_database(form, form_type):
             firewatch_other_duties = '-1'
 
         #(job_id, initator, fire_risk, firewatch_first, firewatch_last, extinguish_equip_avail, equip_inspct, firewatch_trained, firewatch_other_duties)
-        initiator = 'admin'
+        initiator = flask.session['username']
         command = f'''
         INSERT INTO firewatch (job_id, initiator, fire_risk, firewatch_first, firewatch_last, extinguish_equip_avail, equip_inspct, firewatch_trained, firewatch_other_duties)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
